@@ -130,7 +130,10 @@
 (defadvice dired-read-dir-and-switches(around helm-dired-history activate)
   (helm-dired-history--update (expand-file-name default-directory))
   (let ((default-directory default-directory))
-    (unless (next-read-file-uses-dialog-p) (setq default-directory ""))
+    ;; HACK: Always use default-directory as a starting point.
+    ;; Not sure why this is required when executing `dired' but without it
+    ;; the default directory is never used
+   ;; (unless (next-read-file-uses-dialog-p) (setq default-directory ""))
     (cl-letf (((symbol-function 'read-file-name)
                #'helm-dired-history-read-file-name))
       ad-do-it)))
